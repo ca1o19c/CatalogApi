@@ -14,11 +14,11 @@ namespace CatalogApi.Controllers
     public class ItemsController : ControllerBase
     {
 
-        private readonly ItemsRepository repository;
+        private readonly IItemsRepository repository;
 
-        public ItemsController()
+        public ItemsController(IItemsRepository repository)
         {
-            repository = new ItemsRepository();
+           this.repository = repository;
         }
 
         [HttpGet]
