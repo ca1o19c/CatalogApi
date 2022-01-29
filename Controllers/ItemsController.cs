@@ -43,21 +43,50 @@ namespace CatalogApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ItemDto> CreateItem(ItemRequest itemRequest)
+        public ActionResult CreateItem(ItemRequest itemRequest)
         {
-            Item item = new()
-            {
-                Id = Guid.NewGuid(),
-                Name = itemRequest.Name,
-                Price = itemRequest.Price,
-                CreatedDate = DateTimeOffset.UtcNow
-            };
+            var validateResult = new ItemValidator().Validate(itemRequest);
+
+            if (!validateResult.IsValid)
+                return BadRequest(new ResultData(false, validateResult.Errors.ConvertErrorMessageList()));
+
+
+            var item = itemRequest.AsEntity();
+
 
             repository.CreateItem(item);
 
+            return Ok(new ResultData(true, new List<String>()));
+        }
 
-            return CreatedAtAction(nameof(GetItem), new { id = item.Id }, item.AsDto());
+        [HttpPut("{id}")]
+        public ActionResult UpdateItem(Guid id, ItemRequest itemRequest)
+        {
+            var existingItem = repository.GetItem(id);
 
+            if (existingItem is null)
+            {
+                var errors = new List<String>();
+
+                errors.Add("Item not found");
+
+                return NotFound(new ResultData(false, errors));
+            }
+
+            var validateResult = new ItemValidator().Validate(itemRequest);
+
+            if (!validateResult.IsValid)
+                return BadRequest(new ResultData(false, validateResult.Errors.ConvertErrorMessageList()));
+
+            var updatedItem = existingItem with
+            {
+                Name = itemRequest.Name,
+                Price = itemRequest.Price
+            };
+
+            repository.UpdateItem(updatedItem);
+
+            return NoContent();
         }
     }
 }
