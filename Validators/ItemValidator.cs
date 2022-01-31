@@ -1,5 +1,4 @@
 ﻿using CatalogApi.Dto;
-using CatalogApi.Enumerator;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -14,10 +13,10 @@ namespace CatalogApi.Validators
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
-                .WithMessage(ResponseMessages.ITEM_NAME_INVALID.GetEnumDescription());
+                .WithMessage("Please specify a name for the item");
 
             RuleFor(x => x.Price)
-                .GreaterThanOrEqualTo(0).WithMessage(ResponseMessages.PRICE_LENGTH_INVALID.GetEnumDescription());
+                .GreaterThanOrEqualTo(0).WithMessage("The price must be greater than or equal to 0");
         }
     }
 }
