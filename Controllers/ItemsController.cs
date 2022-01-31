@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CatalogApi.Controllers
 {
@@ -37,7 +36,14 @@ namespace CatalogApi.Controllers
             var item = repository.GetItem(id);
 
             if (item is null)
-                return NotFound();
+            {
+                var errors = new List<string>
+                {
+                    "Item not found"
+                };
+
+                return NotFound(new ResultData(false, errors));
+            }
 
             return item.AsDto();
         }
@@ -86,6 +92,26 @@ namespace CatalogApi.Controllers
             };
 
             repository.UpdateItem(updatedItem);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteItem(Guid id)
+        {
+            var existingItem = repository.GetItem(id);
+
+            if (existingItem is null)
+            {
+                var errors = new List<string>
+                {
+                    "Item not found"
+                };
+
+                return NotFound(new ResultData(false, errors));
+            }
+
+            repository.DeleteItem(id);
 
             return NoContent();
         }
