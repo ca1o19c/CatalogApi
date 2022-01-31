@@ -1,5 +1,4 @@
 ﻿using CatalogApi.Dto;
-using CatalogApi.Enumerator;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
