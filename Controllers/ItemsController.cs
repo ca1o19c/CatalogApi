@@ -56,7 +56,7 @@ namespace CatalogApi.Controllers
 
             repository.CreateItem(item);
 
-            return Ok(new ResultData(true, new List<String>()));
+            return Ok(new ResultData(true, new List<string>()));
         }
 
         [HttpPut("{id}")]
@@ -66,9 +66,10 @@ namespace CatalogApi.Controllers
 
             if (existingItem is null)
             {
-                var errors = new List<String>();
-
-                errors.Add("Item not found");
+                var errors = new List<string>
+                {
+                    "Item not found"
+                };
 
                 return NotFound(new ResultData(false, errors));
             }
