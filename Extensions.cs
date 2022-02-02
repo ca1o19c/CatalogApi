@@ -30,7 +30,7 @@ namespace CatalogApi
                 Id = Guid.NewGuid(),
                 Name = itemRequest.Name,
                 Price = itemRequest.Price,
-                CreatedDate = DateTimeOffset.UtcNow
+                CreatedDate = DateTimeOffset.Now
             };
         }
 
