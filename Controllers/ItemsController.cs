@@ -25,7 +25,7 @@ namespace CatalogApi.Controllers
         [HttpGet]
         public IEnumerable<ItemDto> GetItems()
         {
-            var items = repository.GetItems().Select(item => item.AsDto());
+            var items = repository.GetItemsAsync().Select(item => item.AsDto());
 
             return items;
         }
@@ -33,7 +33,7 @@ namespace CatalogApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<ItemDto> GetItem(Guid id)
         {
-            var item = repository.GetItem(id);
+            var item = repository.GetItemAsync(id);
 
             if (item is null)
             {
@@ -60,7 +60,7 @@ namespace CatalogApi.Controllers
             var item = itemRequest.AsEntity();
 
 
-            repository.CreateItem(item);
+            repository.CreateItemAsync(item);
 
             return Ok(new ResultData(true, new List<string>()));
         }
@@ -68,7 +68,7 @@ namespace CatalogApi.Controllers
         [HttpPut("{id}")]
         public ActionResult UpdateItem(Guid id, ItemRequest itemRequest)
         {
-            var existingItem = repository.GetItem(id);
+            var existingItem = repository.GetItemAsync(id);
 
             if (existingItem is null)
             {
@@ -91,7 +91,7 @@ namespace CatalogApi.Controllers
                 Price = itemRequest.Price
             };
 
-            repository.UpdateItem(updatedItem);
+            repository.UpdateItemAsync(updatedItem);
 
             return NoContent();
         }
@@ -99,7 +99,7 @@ namespace CatalogApi.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteItem(Guid id)
         {
-            var existingItem = repository.GetItem(id);
+            var existingItem = repository.GetItemAsync(id);
 
             if (existingItem is null)
             {
@@ -111,7 +111,7 @@ namespace CatalogApi.Controllers
                 return NotFound(new ResultData(false, errors));
             }
 
-            repository.DeleteItem(id);
+            repository.DeleteItemAsync(id);
 
             return NoContent();
         }
