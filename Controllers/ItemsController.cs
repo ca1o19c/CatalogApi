@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CatalogApi.Controllers
 {
@@ -23,17 +24,18 @@ namespace CatalogApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ItemDto> GetItems()
+        public async Task<IEnumerable<ItemDto>> GetItemsAsync()
         {
-            var items = repository.GetItems().Select(item => item.AsDto());
+            var items = (await repository.GetItemsAsync())
+                .Select(item => item.AsDto());
 
             return items;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<ItemDto> GetItem(Guid id)
+        public async Task<ActionResult<ItemDto>> GetItemAsync(Guid id)
         {
-            var item = repository.GetItem(id);
+            var item = await repository.GetItemAsync(id);
 
             if (item is null)
             {
@@ -49,7 +51,7 @@ namespace CatalogApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateItem(ItemRequest itemRequest)
+        public async Task<ActionResult> CreateItemAsync(ItemRequest itemRequest)
         {
             var validateResult = new ItemValidator().Validate(itemRequest);
 
@@ -60,15 +62,15 @@ namespace CatalogApi.Controllers
             var item = itemRequest.AsEntity();
 
 
-            repository.CreateItem(item);
+            await repository.CreateItemAsync(item);
 
             return Ok(new ResultData(true, new List<string>()));
         }
 
         [HttpPut("{id}")]
-        public ActionResult UpdateItem(Guid id, ItemRequest itemRequest)
+        public async Task<ActionResult> UpdateItemAsync(Guid id, ItemRequest itemRequest)
         {
-            var existingItem = repository.GetItem(id);
+            var existingItem = await repository.GetItemAsync(id);
 
             if (existingItem is null)
             {
@@ -91,15 +93,15 @@ namespace CatalogApi.Controllers
                 Price = itemRequest.Price
             };
 
-            repository.UpdateItem(updatedItem);
+            await repository.UpdateItemAsync(updatedItem);
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteItem(Guid id)
+        public async Task<ActionResult> DeleteItemAsync(Guid id)
         {
-            var existingItem = repository.GetItem(id);
+            var existingItem = await repository.GetItemAsync(id);
 
             if (existingItem is null)
             {
@@ -111,7 +113,7 @@ namespace CatalogApi.Controllers
                 return NotFound(new ResultData(false, errors));
             }
 
-            repository.DeleteItem(id);
+            await repository.DeleteItemAsync(id);
 
             return NoContent();
         }
