@@ -60,7 +60,6 @@ namespace CatalogApi.Controllers
 
 
             var item = itemRequest.AsEntity();
-
             
             await repository.CreateItemAsync(item);
 
